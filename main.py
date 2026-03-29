@@ -169,7 +169,30 @@ def mostrar():
 
 
 def eliminar():
-    indice = seleccion_id_usuario()
+    
+    indice = seleccion_id_usuario('eliminar')
+    if indice == 'salir':
+        loading('Saliendo...')
+        return 
+    while True:
+        desicion = input('Estas seguro que deseas eliminar este usuario? (si/no)\n>')
+        
+        if desicion.lower() in ['si', 's']:
+            loading('Eliminando...')
+            del usuarios[indice]
+            print('USUARIO ELIMINADO CORRECTAMENTE!!')
+            break
+        elif desicion.lower() in ['n', 'no']:
+            loading('Saliendo al menu...')
+            break
+        else:
+            print('OPCION INVALIDA!!')
+            
+            
+def buscar():
+    print
+        
+    
 
 
 #GUARDAR DATOS EN UN ARCHIVO JSON
@@ -191,7 +214,9 @@ while True:
         '2.Editar\n',
         '3.Mostrar\n',
         '4.Guardar\n',
-        '5.Salir\n')
+        '5.Eliminar\n',
+        '6.Buscar\n',
+        '7.Salir\n')
 
     option = input('Accion > ')
     print()
@@ -225,9 +250,13 @@ while True:
                 t.sleep(1.5)
             else:
                 eliminar()
+                
+                
+        case '6' | 'buscar':
+            buscar()
 
 
-        case '6' | 'salir':
+        case '7' | 'salir':
             break
 
 

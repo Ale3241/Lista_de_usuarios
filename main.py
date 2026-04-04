@@ -2,7 +2,7 @@
 # Lista de usuarios(diccionarios), permitir agregar varios usuarios, mostrar cuantos hay
 
 import json
-
+import pandas as pd
 import os
 import time as t
 
@@ -190,7 +190,45 @@ def eliminar():
             
             
 def buscar():
-    print
+    opciones = {}
+    for u in range(len(usuarios)):
+        for k in usuarios[u]:
+            opciones[k] = opciones.get(k, 0) + 1
+
+    while True:
+        limpiar()
+        print('Escribe por cual vas a buscar:')        
+        for o in opciones:
+            print(f'{o}({opciones[o]})')
+            
+        opcion = input('> ').strip().title()
+        encontrados = False
+
+        if opcion in opciones:
+
+            print(f'Estos son los usuarios cque contienen "{opcion}":\n')
+            
+            for u in usuarios:
+                if u.get(opcion):
+                    print(u)
+
+            filtro = input('\nDame el valor que deseas buscar:').strip().title()
+
+            print(f'\nResultados para {opcion} = {filtro}:\n')
+            for u in usuarios:
+                if str(u.get(opcion)) == filtro:
+                    print(u)
+                    encontrados = True
+
+            if not encontrados:
+                print('No se ha encontrado ningun usuario...')
+                t.sleep(1.5)
+            
+            input('')
+            break
+        else:    
+            print('Esa opcion no existe...')
+            t.sleep(1.5)
         
     
 
@@ -204,6 +242,19 @@ def guardar():
     print('CAMBIOS GUARDADOS CON EXITO!')
     t.sleep(1)
 
+def print_w_time(message):
+    print('No hay usuarios para ', message)
+    t.sleep(1.5)
+
+
+def importar_xlsx():
+    df = pd.DataFrame(usuarios)
+    loading('Importando...')
+    df.to_excel("Lista_usuarios.xlsx", index=False)
+    limpiar()
+    print('Importado con exito!')
+    t.sleep(1)
+
 
 #MENU - MATCH
 while True:
@@ -214,9 +265,10 @@ while True:
         '2.Editar\n',
         '3.Mostrar\n',
         '4.Guardar\n',
-        '5.Eliminar\n',
-        '6.Buscar\n',
-        '7.Salir\n')
+        '5.Importar(xlsx)\n',
+        '6.Eliminar\n',
+        '7.Buscar\n',
+        '8.Salir\n')
 
     option = input('Accion > ')
     print()
@@ -229,8 +281,7 @@ while True:
 
         case '2' | 'editar':
             if not usuarios:
-                print("No hay usuarios para editar.")
-                t.sleep(1.5)
+                print_w_time('editar')
             else:
                 editar()
 
@@ -244,19 +295,25 @@ while True:
             guardar()
 
 
-        case '5' | 'eliminar':
+        case '5' | 'importar':
+            importar_xlsx()
+
+
+        case '6' | 'eliminar':
             if not usuarios:
-                print("No hay usuarios para editar.")
-                t.sleep(1.5)
+                print_w_time('eliminar')
             else:
                 eliminar()
                 
                 
-        case '6' | 'buscar':
-            buscar()
+        case '7' | 'buscar':
+            if not usuarios:
+                print_w_time('buscar')
+            else:
+                buscar()
 
 
-        case '7' | 'salir':
+        case '8' | 'salir':
             break
 
 
